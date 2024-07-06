@@ -3,7 +3,7 @@ import pathlib
 import pickle
 import spacy
 
-dependency_file_path = {
+_dependency_file_path = {
     "VECTORIZER" : "./vectorizer.pk",
     "VECTORS" : "./vectors.pk",
     "LINKS" : "./links.pk",
@@ -18,7 +18,7 @@ def dependency_loader():
     if platform.system()=="Windows":
         pathlib.PosixPath = pathlib.WindowsPath
 
-    for filename,filepath in dependency_file_path.items():
+    for filename,filepath in _dependency_file_path.items():
         try:
             with open(filepath, "rb") as file:
                 dependencies[filename] = pickle.load(file)
@@ -27,3 +27,7 @@ def dependency_loader():
             raise RuntimeError(f"Exception:{E}")
         
     pathlib.PosixPath = DEFAULT_PICKLE_FILEPATH_TYPE
+
+    return dependencies
+
+__all__ = ["dependency_loader"]
