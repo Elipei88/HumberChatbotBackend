@@ -8,7 +8,7 @@ _dependency_file_path = {
     "VECTORS" : "./vectors.pk",
     "LINKS" : "./links.pk",
     "NORMALIZER" : "./normalizer.pk",
-    # "NLP" : "./nlp.pk"
+    "NLP" : "./nlp_win.pk" if platform.system()=="Windows" else "./nlp.pk"
 }
 
 def dependency_loader():
