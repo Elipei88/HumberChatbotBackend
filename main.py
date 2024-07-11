@@ -7,7 +7,8 @@ import uvicorn
 app = FastAPI()
 
 origins = [
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://nisarg851.github.io/HumberChatbot/"
 ]
 
 app.add_middleware(
