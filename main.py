@@ -7,7 +7,7 @@ app = FastAPI()
 
 origins = [
     "http://localhost:5173",
-    "https://nisarg851.github.io/HumberChatbot/"
+    "https://nisarg851.github.io"
 ]
 
 app.add_middleware(
