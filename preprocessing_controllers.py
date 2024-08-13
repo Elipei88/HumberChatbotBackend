@@ -30,6 +30,8 @@ def preprocess_document(url):
         rmv_spcs = re.sub(r'\s{2,}', ' ', rmv_smbl)
         Link_to_Doc['Document'][i] = rmv_spcs
     
-    Link_to_Doc.to_excel('Link_Document_Complete_Processed.xlsx', index=False)
+    filename = url.split("/")[-1]
 
-    return './Link_Document_Complete_Processed.xlsx'
+    Link_to_Doc.to_excel(filename, index=False)
+
+    return f'./{filename}'

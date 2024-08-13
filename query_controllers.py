@@ -94,6 +94,9 @@ def query_from(all_links, n, usr='student'):
         return -1
 
 def get_relevant_links(nlp, query, vectorizer, vectors, links, n=5, thres=0.1, usr="student"):
+    flag = ("Resume".lower() in query) or ("Cover letter".lower() in query) or ("Networking".lower() in query) 
+    flag = flag or ("Interview".lower() in query) or ("LinkedIn".lower() in query)
+
     query = query.replace('linkedin', 'LinkedIn')
     lower_than_upper_split = re.sub(r"([a-z\.!?])([A-Z])", r"\1 \2", query)
     upper_than_lower_split = re.sub(r"([A-Z\.!?]{2,})([A-Z]{1}[a-z]{2,})", r"\1 \2", lower_than_upper_split)
@@ -101,16 +104,18 @@ def get_relevant_links(nlp, query, vectorizer, vectors, links, n=5, thres=0.1, u
     bracket_after = re.sub(r"([a-z])([(])", r"\1 \2", bracket_before)
     rmv_smbl = re.sub(r'[^A-Za-z\n@]', ' ', bracket_after)
     rmv_spcs = re.sub(r'\s{2,}', ' ', rmv_smbl)
-
     processed_query = process_query(rmv_spcs, nlp)
     query_vector = vectorizer.transform([processed_query])
     cosines = get_cosine_similarities(vectors, query_vector)
     index = get_n_largest_indexes(cosines, 40, thres)
     result_links = -1
-
     if index != -1:
         result_links = query_from(np.array(links)[index], n, usr)
-
     if result_links == -1:
         return (index, ['http://careers.humber.ca'])
+    if flag and 'https://careers.humber.ca/resources-career.php' in result_links:
+        result_links.remove('https://careers.humber.ca/resources-career.php')
+        result_links = ['https://careers.humber.ca/resources-career.php'] + result_links
+    elif flag:
+        result_links = ['https://careers.humber.ca/resources-career.php'] + result_links      
     return (index, list(np.array(result_links)))

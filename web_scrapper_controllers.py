@@ -243,9 +243,9 @@ def generate_document_from_scraped_data(csv_file):
 
     link_doc_df.to_excel('Link_to_doc.xlsx', engine='xlsxwriter')
     doc_link_df.to_excel('Doc_to_link.xlsx', engine='xlsxwriter')
-    link_document_df.to_excel('Link_to_Document_File.xlsx', engine='xlsxwriter')
+    link_document_df.to_excel('Link_Document_Complete_Processed.xlsx', engine='xlsxwriter')
 
-    return './Link_to_Document_File.xlsx'
+    return './Link_Document_Complete_Processed.xlsx'
 
 def web_scrapper(root):
     link_to_purpose = all_paths(root, 3)
