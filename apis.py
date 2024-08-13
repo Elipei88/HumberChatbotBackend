@@ -1,12 +1,13 @@
 from fastapi import APIRouter, HTTPException
-from dependency import dependency_loader
+from model_binaries_controllers import model_binaries_loader, update_model_binaries_from_document
 from Models import QueryModel
-from query_handlers import get_relevant_links
-from query_handlers import web_scrapper
+from preprocessing_controllers import preprocess_document
+from query_controllers import get_relevant_links
+from web_scrapper_controllers import web_scrapper
 
 router = APIRouter()
 
-dependencies = dependency_loader()
+model_binaries = model_binaries_loader()
 
 # Constants
 MAX_LINKS_ON_RESPONSE = 25
@@ -16,13 +17,14 @@ THRESHOLD = 0.1
 def getQueryResult(query_request: QueryModel):
     try:
         status, relevant_links = get_relevant_links(
-            dependencies["NLP"],
-            query_request.query,
-            dependencies["VECTORIZER"],
-            dependencies["VECTORS"],
-            dependencies["LINKS"],
-            MAX_LINKS_ON_RESPONSE,
-            THRESHOLD
+            nlp=model_binaries["NLP"],
+            query=query_request.query,
+            vectorizer=model_binaries["VECTORIZER"],
+            vectors=model_binaries["VECTORS"],
+            links=model_binaries["LINKS"],
+            n=MAX_LINKS_ON_RESPONSE,
+            thres=THRESHOLD,
+            usr=query_request.user_role
         )
 
         response_message = f"Here are the top resources that I found on {query_request.query}:"
@@ -35,7 +37,9 @@ def getQueryResult(query_request: QueryModel):
     except Exception as E:
         raise HTTPException(status_code=500, detail=str(E))
     
-@router.post("/update-vectors")
-def updateVectors(token: str):
-    web_scrapper(root="http://careers.humber.ca")
-    return {"message":"The Vectors are updated successfully"}
+@router.post("/update-model")
+def updateBinaries(token: str):
+    url_to_document = web_scrapper(root="http://careers.humber.ca")
+    url_to_document = preprocess_document(url_to_document)
+    update_model_binaries_from_document(url_to_document)
+    return {"message":"Model's Binaries are updated successfully"}

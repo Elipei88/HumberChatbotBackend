@@ -5,3 +5,4 @@ scikit-learn==1.2.2
 spacy==3.7.5
 apscheduler==3.10.4
 pandas==2.1.4
+bs4==0.0.2
